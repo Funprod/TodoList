@@ -1,8 +1,11 @@
+import { FilteredTaskType } from "./App"
 import { Button } from "./Button"
 
 type TodoListPropsType = {
     title: string
     tasks: Array<TasksPropsType>
+    removeTasks: (id: number) => void
+    changeFilter: (nevFilterValue: FilteredTaskType) => void
 }
 
 export type TasksPropsType = {
@@ -20,6 +23,7 @@ export const TodoList = (props: TodoListPropsType) => {
                 <span>
                     {t.text}
                 </span>
+                <Button title="X" onClickHandler={() => props.removeTasks(t.id)} />
             </li >
         )
     })
@@ -35,9 +39,9 @@ export const TodoList = (props: TodoListPropsType) => {
                 {task}
             </ul>
             <div>
-                <Button title={"All"} />
-                <Button title={"Active"} />
-                <Button title={"Completed"} />
+                <Button title={"All"} onClickHandler={() => props.changeFilter("all")} />
+                <Button title={"Active"} onClickHandler={() => props.changeFilter("active")} />
+                <Button title={"Completed"} onClickHandler={() => props.changeFilter("completed")} />
             </div>
         </div>
     )
