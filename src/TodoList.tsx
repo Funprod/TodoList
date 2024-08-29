@@ -1,20 +1,24 @@
+import { ChangeEvent, KeyboardEvent, useState } from "react"
 import { FilteredTaskType } from "./App"
 import { Button } from "./Button"
 
 type TodoListPropsType = {
-    title: string
+    title: string[]
     tasks: Array<TasksPropsType>
-    removeTasks: (id: number) => void
+    removeTasks: (id: string) => void
     changeFilter: (nevFilterValue: FilteredTaskType) => void
+    addTask: (title: string) => void
 }
 
 export type TasksPropsType = {
-    id: number
+    id: string
     text: string
     isDone: boolean
 }
 
 export const TodoList = (props: TodoListPropsType) => {
+
+    const [inputValue, setInputValue] = useState("")
 
     const task: Array<JSX.Element> = props.tasks.map((t) => {
         return (
@@ -28,12 +32,28 @@ export const TodoList = (props: TodoListPropsType) => {
         )
     })
 
+    const addTaskBtnHandler = () => {
+        props.addTask(inputValue)
+        setInputValue("")
+    }
+
+    const changeInputValue = (e: ChangeEvent<HTMLInputElement>) => setInputValue(e.currentTarget.value)
+
+    const keyDownInputValue = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            addTaskBtnHandler()
+        }
+    }
+
     return (
         <div className='todoList'>
             <h3>{props.title}</h3>
             <div>
-                <input />
-                <Button title={"+"} />
+                <input value={inputValue}
+                    onChange={changeInputValue}
+                    onKeyDown={keyDownInputValue}
+                />
+                <Button onClickHandler={addTaskBtnHandler} title={"+"} />
             </div>
             <ul>
                 {task}

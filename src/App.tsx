@@ -1,35 +1,36 @@
 import React, { useState } from 'react';
 import './App.css';
 import { TasksPropsType, TodoList } from './TodoList';
+import { v1 } from 'uuid';
 
 export type FilteredTaskType = "all" | "active" | "completed"
 
 function App() {
-    /*     const tasks1: Array<TasksPropsType> = [
-            { id: 1, text: "HTML&CSS", isDone: true },
-            { id: 2, text: "JS", isDone: true },
-            { id: 3, text: "React", isDone: false },
-            { id: 4, text: "Redux", isDone: false },
-        ] */
-    // const tasks2: Array<TasksPropsType> = [
-    //     { id: 1, text: "Dubstep", isDone: true },
-    //     { id: 2, text: "Rock", isDone: true },
-    //     { id: 3, text: "Pop", isDone: false },
-    //     { id: 4, text: "Rap", isDone: false },
-    // ]
+    const title = ["What to learn"]
 
     const [tasks, setTasks] = useState<Array<TasksPropsType>>(
         [
-            { id: 1, text: "HTML&CSS", isDone: true },
-            { id: 2, text: "JS", isDone: true },
-            { id: 3, text: "React", isDone: false },
-            { id: 4, text: "Redux", isDone: false },
-            { id: 5, text: 'Typescript', isDone: true },
-            { id: 6, text: 'RTK query', isDone: false },
+            { id: v1(), text: "HTML&CSS", isDone: true },
+            { id: v1(), text: "JS", isDone: true },
+            { id: v1(), text: "React", isDone: false },
+            { id: v1(), text: "Redux", isDone: false },
+            { id: v1(), text: 'Typescript', isDone: true },
+            { id: v1(), text: 'RTK query', isDone: false },
         ]
     )
 
-    const removeTasks = (id: number) => {
+    const addTask = (title: string) => {
+        const newTask: TasksPropsType = {
+            id: v1(),
+            text: title,
+            isDone: false,
+        }
+        const newState: Array<TasksPropsType> = [newTask, ...tasks];
+        setTasks(newState)
+    }
+
+
+    const removeTasks = (id: string) => {
         const removeTask = tasks.filter(t => t.id !== id)
         setTasks(removeTask)
     }
@@ -48,10 +49,11 @@ function App() {
     return (
         <div className="App">
             <TodoList
-                title={"What to learn"}
+                title={title}
                 tasks={filterTasks}
                 removeTasks={removeTasks}
                 changeFilter={changeFilter}
+                addTask={addTask}
             />
             {/* <TodoList title={"What to listen"} tasks={tasks2} />
  */}        </div>
