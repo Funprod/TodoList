@@ -21,13 +21,14 @@ export const TodoList = (props: TodoListPropsType) => {
     const [inputValue, setInputValue] = useState("")
 
     const task: Array<JSX.Element> = props.tasks.map((t) => {
+        const onRemoveHandler = () => {
+            props.removeTasks(t.id)
+        }
         return (
             <li key={t.id}>
                 <input type="checkbox" checked={t.isDone} />
-                <span>
-                    {t.text}
-                </span>
-                <Button title="X" onClickHandler={() => props.removeTasks(t.id)} />
+                <span>{t.text}</span>
+                <Button title="X" onClickHandler={onRemoveHandler} />
             </li >
         )
     })
@@ -45,6 +46,10 @@ export const TodoList = (props: TodoListPropsType) => {
         }
     }
 
+    const onAllClickHandler = () => props.changeFilter("all")
+    const onActiveClickHandler = () => props.changeFilter("active")
+    const onCompletedClickHandler = () => props.changeFilter("completed")
+
     return (
         <div className='todoList'>
             <h3>{props.title}</h3>
@@ -59,9 +64,9 @@ export const TodoList = (props: TodoListPropsType) => {
                 {task}
             </ul>
             <div>
-                <Button title={"All"} onClickHandler={() => props.changeFilter("all")} />
-                <Button title={"Active"} onClickHandler={() => props.changeFilter("active")} />
-                <Button title={"Completed"} onClickHandler={() => props.changeFilter("completed")} />
+                <Button title={"All"} onClickHandler={onAllClickHandler} />
+                <Button title={"Active"} onClickHandler={onActiveClickHandler} />
+                <Button title={"Completed"} onClickHandler={onCompletedClickHandler} />
             </div>
         </div>
     )
