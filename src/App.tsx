@@ -46,6 +46,11 @@ function App() {
 
     const changeFilter = (nevFilterValue: FilteredTaskType) => setFilter(nevFilterValue)
 
+    const changeTaskStatus = (taskId: string, newIsDone: boolean) => {
+        const newState = tasks.map(t => t.id === taskId ? { ...t, isDone: newIsDone } : t)
+        setTasks(newState)
+    }
+
     return (
         <div className="App">
             <TodoList
@@ -54,6 +59,8 @@ function App() {
                 removeTasks={removeTasks}
                 changeFilter={changeFilter}
                 addTask={addTask}
+                changeTaskStatus={changeTaskStatus}
+                filter={filter}
             />
             {/* <TodoList title={"What to listen"} tasks={tasks2} />
  */}        </div>

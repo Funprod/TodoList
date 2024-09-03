@@ -5,9 +5,11 @@ import { Button } from "./Button"
 type TodoListPropsType = {
     title: string[]
     tasks: Array<TasksPropsType>
+    filter: string
     removeTasks: (id: string) => void
     changeFilter: (nevFilterValue: FilteredTaskType) => void
     addTask: (title: string) => void
+    changeTaskStatus: (taskId: string, newIsDone: boolean) => void
 }
 
 export type TasksPropsType = {
@@ -19,26 +21,38 @@ export type TasksPropsType = {
 export const TodoList = (props: TodoListPropsType) => {
 
     const [inputValue, setInputValue] = useState("")
+    const [error, setError] = useState<boolean>(false)
 
     const task: Array<JSX.Element> = props.tasks.map((t) => {
         const onRemoveHandler = () => {
             props.removeTasks(t.id)
         }
+        const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            props.changeTaskStatus(t.id, e.currentTarget.checked)
+        }
         return (
             <li key={t.id}>
-                <input type="checkbox" checked={t.isDone} />
-                <span>{t.text}</span>
+                <input type="checkbox" checked={t.isDone} onChange={changeTaskStatusHandler} />
+                <span className={t.isDone ? "task-done" : "task"}>{t.text}</span>
                 <Button title="X" onClickHandler={onRemoveHandler} />
             </li >
         )
     })
 
     const addTaskBtnHandler = () => {
-        props.addTask(inputValue)
+        if (inputValue && inputValue.trim()) {
+            props.addTask(inputValue.trim())
+            setInputValue("")
+        } else {
+            setError(true)
+        }
         setInputValue("")
     }
 
-    const changeInputValue = (e: ChangeEvent<HTMLInputElement>) => setInputValue(e.currentTarget.value)
+    const changeInputValue = (e: ChangeEvent<HTMLInputElement>) => {
+        error && setError(false)
+        setInputValue(e.currentTarget.value)
+    }
 
     const keyDownInputValue = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -57,16 +71,18 @@ export const TodoList = (props: TodoListPropsType) => {
                 <input value={inputValue}
                     onChange={changeInputValue}
                     onKeyDown={keyDownInputValue}
+                    className={error ? "input-error" : ""}
                 />
                 <Button onClickHandler={addTaskBtnHandler} title={"+"} />
+                {error && <div style={{ color: "red" }}> Title is required</div>}
             </div>
             <ul>
                 {task}
             </ul>
             <div>
-                <Button title={"All"} onClickHandler={onAllClickHandler} />
-                <Button title={"Active"} onClickHandler={onActiveClickHandler} />
-                <Button title={"Completed"} onClickHandler={onCompletedClickHandler} />
+                <Button classes={props.filter === "all" ? "filter-btn-active" : ""} title={"All"} onClickHandler={onAllClickHandler} />
+                <Button classes={props.filter === "active" ? "filter-btn-active" : ""} title={"Active"} onClickHandler={onActiveClickHandler} />
+                <Button classes={props.filter === "completed" ? "filter-btn-active" : ""} title={"Completed"} onClickHandler={onCompletedClickHandler} />
             </div>
         </div>
     )
