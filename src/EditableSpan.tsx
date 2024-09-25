@@ -1,11 +1,13 @@
-import {ChangeEvent, useState} from "react";
+import { SxProps, TextField, Typography } from "@mui/material";
+import { ChangeEvent, useState } from "react";
 
 type EditableSpanPropsType = {
     title: string
     changeItemTitle: (title: string) => void
+    classes?: SxProps
 }
 
-export const EditableSpan = ({title, changeItemTitle}: EditableSpanPropsType) => {
+export const EditableSpan = ({ title, changeItemTitle, classes }: EditableSpanPropsType) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [newTitle, setNewTitle] = useState<string>("");
 
@@ -25,12 +27,15 @@ export const EditableSpan = ({title, changeItemTitle}: EditableSpanPropsType) =>
 
     return (
         editMode
-        ? <input
-            value={newTitle}
-            onBlur={offEditMode}
-            onChange={onChangeNewTitle}
-            autoFocus
+            ? <TextField
+                size="small"
+                label="Change task"
+                variant="standard"
+                value={newTitle}
+                onBlur={offEditMode}
+                onChange={onChangeNewTitle}
+                autoFocus
             />
-        : <span onDoubleClick={onEditMode}>{title}</span>
+            : <Typography sx={classes} component="span" onDoubleClick={onEditMode}>{title}</Typography>
     )
 }

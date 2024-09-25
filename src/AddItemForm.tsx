@@ -1,5 +1,6 @@
-import {Button} from "./Button";
-import {ChangeEvent, KeyboardEvent, useState} from "react";
+import { Button, IconButton, TextField } from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { ChangeEvent, KeyboardEvent, useState } from "react";
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -33,13 +34,23 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
 
     return (
         <div>
-            <input value={inputValue}
-                   onChange={changeInputValue}
-                   onKeyDown={keyDownInputValue}
-                   className={error ? "input-error" : ""}
+            <TextField
+                size='small'
+                variant='outlined'
+                label="Type value"
+                value={inputValue}
+                onChange={changeInputValue}
+                onKeyUp={keyDownInputValue}
+                error={error}
+                helperText={error ? 'Title is required' : ''}
             />
-            <Button onClickHandler={addItemBtnHandler} title={"+"}/>
-            {error && <div style={{color: "red"}}> Title is required</div>}
+            <IconButton
+                size="small"
+                color="primary"
+                onClick={addItemBtnHandler}
+            >
+                <AddCircleOutlineIcon />
+            </IconButton>
         </div>
     )
 }

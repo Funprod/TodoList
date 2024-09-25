@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import './App.css';
 import { TasksPropsType, TodoList } from './TodoList';
 import { v1 } from 'uuid';
-import {AddItemForm} from "./AddItemForm";
+import { AddItemForm } from "./AddItemForm";
+import { AppBar, Box, Button, Container, createTheme, CssBaseline, Grid2, IconButton, Paper, Switch, ThemeProvider, Toolbar } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu'
+import { MenuButton } from './MenuButton';
 
-
+type ThemeMode = 'dark' | 'light'
 
 type TasksType = {
     [todolistId: string]: TasksPropsType[]
@@ -80,36 +83,74 @@ function App() {
             title: title,
         }
         setTodolist([...todolist, newTodo])
-        setTasks({...tasks, [newTodo.id]: []})
+        setTasks({ ...tasks, [newTodo.id]: [] })
 
     }
 
     const changeTodolistTitle = (newTitle: string, todolistId: string) => {
-        const newTodo = todolist.map(tl => tl.id === todolistId ? {...tl, title: newTitle}: tl)
+        const newTodo = todolist.map(tl => tl.id === todolistId ? { ...tl, title: newTitle } : tl)
         setTodolist(newTodo)
     }
 
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+
+    const theme = createTheme({
+        palette: {
+            mode: themeMode === 'light' ? 'light' : 'dark',
+            primary: {
+                main: "rgb(23, 145, 78)"
+            }
+        }
+    })
+
+    const changeModeHandler = () => {
+        setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+    }
 
     return (
-        <div className="App">
-            <AddItemForm addItem={addTodolist} />
-            {todolist.map(tl => {
-                return (
-                    <TodoList
-                        key={tl.id}
-                        todolistId={tl.id}
-                        title={tl.title}
-                        tasks={tasks[tl.id]}
-                        removeTasks={removeTasks}
-                        addTask={addTask}
-                        changeTaskStatus={changeTaskStatus}
-                        removeTodolist={removeTodolist}
-                        changeTodolistTitle={changeTodolistTitle}
-                        changeTaskTitle={changeTaskTitle}
-                    />
-                )
-            })}
-        </div>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box>
+                <AppBar position="static" sx={{ mb: "30px" }}>
+                    <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <IconButton color="inherit">
+                            <MenuIcon />
+                        </IconButton>
+                        <Box>
+                            <MenuButton background={theme.palette.primary.dark} color="inherit">Login</MenuButton>
+                            <MenuButton background={theme.palette.primary.dark} color="inherit">Logout</MenuButton>
+                            <MenuButton background={theme.palette.primary.light} color="inherit">Faq</MenuButton>
+                            <Switch color={'default'} onChange={changeModeHandler} />
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+                <Container fixed>
+                    <Grid2 container sx={{ mb: "30px", justifyContent: "center" }}>
+                        <AddItemForm addItem={addTodolist} />
+                    </Grid2>
+                    <Grid2 container spacing={4}>
+                        {todolist.map(tl => {
+                            return (
+                                <Paper elevation={8} sx={{ mb: "30px" }}>
+                                    <TodoList
+                                        key={tl.id}
+                                        todolistId={tl.id}
+                                        title={tl.title}
+                                        tasks={tasks[tl.id]}
+                                        removeTasks={removeTasks}
+                                        addTask={addTask}
+                                        changeTaskStatus={changeTaskStatus}
+                                        removeTodolist={removeTodolist}
+                                        changeTodolistTitle={changeTodolistTitle}
+                                        changeTaskTitle={changeTaskTitle}
+                                    />
+                                </Paper>
+                            )
+                        })}
+                    </Grid2>
+                </Container>
+            </Box>
+        </ThemeProvider>
     );
 }
 
